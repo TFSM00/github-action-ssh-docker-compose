@@ -20,13 +20,7 @@ tar cjvf /tmp/workspace.tar.bz2 --exclude .git --exclude vendor .
 log "Launching ssh agent."
 eval `ssh-agent -s`
 
-remote_command="set -e ; log() { echo '>> [remote]' \$@ ; } ; cleanup() { log 'Removing workspace...'; rm -rf \"\$HOME/microtasker\" ; }; cleanup ; log 'Creating workspace directory...' ; mkdir -p \"\$HOME/microtasker\"; log 'Unpacking workspace...' ; tar -C \"\$HOME/microtasker\" -xjv ; log 'Launching docker-compose...' ; cp \"\$HOME/microtasker-cfg/env-vars.txt\" \"\$HOME/microtasker/\" ; cp \"\$HOME/microtasker-cfg/certificate.crt\" \"\$HOME/microtasker/nginx/\" ; cp \"\$HOME/microtasker-cfg/private.key\" \"\$HOME/microtasker/nginx/\" ; cd \"\$HOME/microtasker/\" ; docker compose --env-file env-vars.txt -f \"$DOCKER_COMPOSE_FILENAME\" -p \"$DOCKER_COMPOSE_PREFIX\" pull ; docker compose --env-file env-vars.txt -f \"$DOCKER_COMPOSE_FILENAME\" -p \"$DOCKER_COMPOSE_PREFIX\" up -d --remove-orphans --build"
-if $USE_DOCKER_STACK ; then
-  remote_command="set -e ; log() { echo '>> [remote]' \$@ ; } ; cleanup() { log 'Removing workspace...'; rm -rf \"\$HOME/microtasker\" ; } ; log 'Creating workspace directory...' ; mkdir -p \"\$HOME/microtasker/$DOCKER_COMPOSE_PREFIX\" ; trap cleanup EXIT ; log 'Unpacking workspace...' ; tar -C \"\$HOME/microtasker/$DOCKER_COMPOSE_PREFIX\" -xjv ; log 'Launching docker stack deploy...' ; cd \"\$HOME/microtasker/$DOCKER_COMPOSE_PREFIX\" ; docker stack deploy -c \"$DOCKER_COMPOSE_FILENAME\" --prune \"$DOCKER_COMPOSE_PREFIX\""
-fi
-if $DOCKER_COMPOSE_DOWN ; then
-  remote_command="set -e ; log() { echo '>> [remote]' \$@ ; } ; cleanup() { log 'Removing workspace...'; rm -rf \"\$HOME/microtasker\" ; } ; log 'Creating workspace directory...' ; mkdir -p \"\$HOME/microtasker\" ; trap cleanup EXIT ; log 'Unpacking workspace...' ; tar -C \"\$HOME/microtasker\" -xjv ; log 'Launching docker-compose...' ; cd \"\$HOME/microtasker\" ; cp \"\$HOME/microtasker-cfg/env-vars.txt\" ./ ; docker compose -f \"$DOCKER_COMPOSE_FILENAME\" -p \"$DOCKER_COMPOSE_PREFIX\" down"
-fi
+remote_command="set -e ; log() { echo '>> [remote]' \$@ ; } ; cleanup() { log 'Removing workspace...'; rm -rf \"\$HOME/portfolio\" ; }; cleanup ; log 'Creating workspace directory...' ; mkdir -p \"\$HOME/portfolio\"; log 'Unpacking workspace...' ; tar -C \"\$HOME/portfolio\" -xjv ; log 'Launching docker-compose...' ; cp \"\$HOME/portfolio-cfg/env-vars.txt\" \"\$HOME/portfolio/\" ; cp \"\$HOME/portfolio-cfg/certificate.crt\" \"\$HOME/portfolio/nginx/\" ; cp \"\$HOME/portfolio-cfg/private.key\" \"\$HOME/portfolio/nginx/\" ; cd \"\$HOME/portfolio/\" ; docker compose --env-file env-vars.txt -f \"$DOCKER_COMPOSE_FILENAME\" -p \"$DOCKER_COMPOSE_PREFIX\" pull ; docker compose --env-file env-vars.txt -f \"$DOCKER_COMPOSE_FILENAME\" -p \"$DOCKER_COMPOSE_PREFIX\" up -d --remove-orphans --build"
 
 ssh-add <(echo "$SSH_PRIVATE_KEY")
 
